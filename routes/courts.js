@@ -33,6 +33,25 @@ router.get("/all", async (req, res) => {
   }
 });
 
+// ✅ Get a single court by ID (needed for EditCourt)
+router.get("/:id", async (req, res) => {
+  const db = await getDB();
+  const { id } = req.params;
+
+  try {
+    const court = await db.collection("courts").findOne({ _id: new ObjectId(id) });
+
+    if (!court) {
+      return res.status(404).json({ error: "Court not found" });
+    }
+
+    res.json(court);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch court by ID" });
+  }
+});
+
+
 // ✅ Add court
 router.post("/", async (req, res) => {
   try {
