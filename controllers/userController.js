@@ -1,13 +1,17 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
-// Login or register
 export const loginOrRegister = async (req, res) => {
   const { email, name, image } = req.body;
 
   let user = await User.findOne({ email });
+
   if (!user) {
     user = await User.create({ email, name, image });
+  } else if (!user.image && image) {
+    // ✅ Update missing image if available
+    user.image = image;
+    await user.save();
   }
 
   const token = jwt.sign({ email, role: user.role }, process.env.JWT_SECRET, {
@@ -23,6 +27,7 @@ export const loginOrRegister = async (req, res) => {
     })
     .json({ message: 'Login successful', role: user.role });
 };
+
 
 // Logout
 export const logout = (req, res) => {

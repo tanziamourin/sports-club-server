@@ -6,12 +6,13 @@ import { getDB } from "../config/db.js";
 const router = express.Router();
 
 // POST /users - Create new user
+// ✅ routes/userRoutes.js
 router.post("/", async (req, res) => {
   try {
     const { name, email, image } = req.body;
     const db = getDB();
-    const existing = await db.collection("users").findOne({ email });
 
+    const existing = await db.collection("users").findOne({ email });
     if (existing) {
       return res.status(409).json({ error: "User already exists" });
     }
@@ -19,7 +20,7 @@ router.post("/", async (req, res) => {
     const newUser = {
       name,
       email,
-      image,
+      image, // ✅ make sure this field is coming
       role: "user",
       createdAt: new Date(),
     };
