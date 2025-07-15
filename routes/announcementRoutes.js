@@ -11,6 +11,24 @@ router.get("/", async (req, res) => {
   res.json(data);
 });
 
+// ✅ Get single announcement by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const db = await getDB();
+    const announcement = await db.collection("announcements").findOne({
+      _id: new ObjectId(req.params.id)
+    });
+
+    if (!announcement) {
+      return res.status(404).json({ error: "Announcement not found" });
+    }
+
+    res.json(announcement);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch announcement" });
+  }
+});
+
 // ✅ Add announcement
 router.post("/", async (req, res) => {
   const db = await getDB();
