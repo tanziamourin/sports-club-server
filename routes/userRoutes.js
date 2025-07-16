@@ -1,4 +1,4 @@
-// routes/userRoutes.js
+
 import express from "express";
 import { ObjectId } from "mongodb";
 import { getDB } from "../config/db.js";
@@ -6,7 +6,7 @@ import { getDB } from "../config/db.js";
 const router = express.Router();
 
 // POST /users - Create new user
-// ✅ routes/userRoutes.js
+
 router.post("/", async (req, res) => {
   try {
     const { name, email, image } = req.body;
@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
     const newUser = {
       name,
       email,
-      image, // ✅ make sure this field is coming
+      image, 
       role: "user",
       createdAt: new Date(),
     };
