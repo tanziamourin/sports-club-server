@@ -8,7 +8,7 @@ const router = express.Router();
 // ✅ Create Payment Intent
 router.post("/create-payment-intent", async (req, res) => {
   const { price } = req.body;
-  const amount = Math.round(price * 100); 
+  const amount = Math.round(price * 100);
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -24,7 +24,6 @@ router.post("/create-payment-intent", async (req, res) => {
   }
 });
 
-
 // ✅ Save Payment Info & Update Booking
 router.post("/", async (req, res) => {
   const payment = req.body;
@@ -32,14 +31,14 @@ router.post("/", async (req, res) => {
   try {
     const db = await getDB();
 
-    
-   
-await db.collection("payments").insertOne(payment);
+    await db.collection("payments").insertOne(payment);
     // 3. Update booking status → confirmed
-    await db.collection("bookings").updateOne(
-      { _id: new ObjectId(payment.bookingId) },
-      { $set: { status: "confirmed" } }
-    );
+    await db
+      .collection("bookings")
+      .updateOne(
+        { _id: new ObjectId(payment.bookingId) },
+        { $set: { status: "confirmed" } }
+      );
 
     res.json({ message: "Payment saved and booking confirmed" });
   } catch (err) {
@@ -53,10 +52,13 @@ router.get("/confirmed/:email", async (req, res) => {
   const email = req.params.email;
   try {
     const db = await getDB();
-    const confirmed = await db.collection("bookings").find({
-      userEmail: email, 
-      status: "confirmed"
-    }).toArray();
+    const confirmed = await db
+      .collection("bookings")
+      .find({
+        userEmail: email,
+        status: "confirmed",
+      })
+      .toArray();
     res.json(confirmed);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch confirmed bookings" });
@@ -68,8 +70,9 @@ router.get("/history/:email", async (req, res) => {
   const email = req.params.email;
   try {
     const db = await getDB();
-    const payments = await db.collection("payments")
-      .find({ userEmail: email }) 
+    const payments = await db
+      .collection("payments")
+      .find({ userEmail: email })
       .sort({ date: -1 })
       .toArray();
     res.json(payments);
@@ -77,7 +80,5 @@ router.get("/history/:email", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch payment history" });
   }
 });
-
-
 
 export default router;

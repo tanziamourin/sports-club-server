@@ -1,4 +1,3 @@
-
 import express from "express";
 import { ObjectId } from "mongodb";
 import { getDB } from "../config/db.js";
@@ -20,7 +19,7 @@ router.post("/", async (req, res) => {
     const newUser = {
       name,
       email,
-      image, 
+      image,
       role: "user",
       createdAt: new Date(),
     };
