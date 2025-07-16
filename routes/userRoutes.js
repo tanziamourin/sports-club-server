@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
     const { name, email, image } = req.body;
     const db = getDB();
 
-    const existing = await db.collection("users").findOne({ email });
+    const existing = await db.collection("users").findOne({ email: req.params.email.toLowerCase() });
     if (existing) {
       return res.status(409).json({ error: "User already exists" });
     }
