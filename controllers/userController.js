@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
 export const loginOrRegister = async (req, res) => {
   const { email, name, image } = req.body;
@@ -15,25 +15,24 @@ export const loginOrRegister = async (req, res) => {
   }
 
   const token = jwt.sign({ email, role: user.role }, process.env.JWT_SECRET, {
-    expiresIn: '7d',
+    expiresIn: "7d",
   });
 
   res
-    .cookie('token', token, {
+    .cookie("token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
-    .json({ message: 'Login successful', role: user.role });
+    .json({ message: "Login successful", role: user.role });
 };
-
 
 // Logout
 export const logout = (req, res) => {
   res
-    .clearCookie('token', { secure: true, sameSite: 'none' })
-    .json({ message: 'Logged out' });
+    .clearCookie("token", { secure: true, sameSite: "none" })
+    .json({ message: "Logged out" });
 };
 
 // Get profile
@@ -49,14 +48,14 @@ export const createUser = async (req, res) => {
     const existingUser = await User.findOne({ email: user.email });
 
     if (existingUser) {
-      return res.status(409).json({ message: 'User already exists' });
+      return res.status(409).json({ message: "User already exists" });
     }
 
     const newUser = await User.create(user);
     res.status(201).json(newUser);
   } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Error creating user:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -67,12 +66,12 @@ export const getUserRole = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.json({ role: user.role });
   } catch (error) {
-    console.error('Error fetching user role:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Error fetching user role:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

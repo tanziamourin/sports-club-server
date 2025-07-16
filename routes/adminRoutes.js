@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 router.get('/stats', getAdminStats);
-router.get('/users', getAllUsers);vvvvvv
+router.get('/users', getAllUsers);
 router.get('/members', getAllMembers);
 router.delete('/members/:id', deleteMember);
 router.get('/bookings/confirmed', getConfirmedBookings);
