@@ -8,7 +8,7 @@ if (!uri) throw new Error("MONGO_URI is not set");
 
 const client = new MongoClient(uri);
 
-let db; // will hold the database instance
+let db; 
 
 // Connect to MongoDB once
 export const connectDB = async () => {
@@ -17,7 +17,7 @@ export const connectDB = async () => {
       await client.connect();
       console.log("MongoDB connected");
     }
-    db = client.db(); // default DB from URI
+    db = client.db(); 
   } catch (err) {
     console.error("MongoDB connection failed", err);
     throw err;
