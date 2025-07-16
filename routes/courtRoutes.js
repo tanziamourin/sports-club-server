@@ -22,7 +22,9 @@ router.post("/", async (req, res) => {
 // DELETE court
 router.delete("/:id", async (req, res) => {
   const db = await connectDB();
-  const result = await db.collection("courts").deleteOne({ _id: new ObjectId(req.params.id) });
+  const result = await db
+    .collection("courts")
+    .deleteOne({ _id: new ObjectId(req.params.id) });
   res.json(result);
 });
 
@@ -30,10 +32,9 @@ router.delete("/:id", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   const db = await connectDB();
   const updatedCourt = req.body;
-  const result = await db.collection("courts").updateOne(
-    { _id: new ObjectId(req.params.id) },
-    { $set: updatedCourt }
-  );
+  const result = await db
+    .collection("courts")
+    .updateOne({ _id: new ObjectId(req.params.id) }, { $set: updatedCourt });
   res.json(result);
 });
 

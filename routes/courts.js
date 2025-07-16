@@ -1,7 +1,7 @@
 // routes/courts.js
-import express from 'express';
-import { getDB } from '../config/db.js';
-import { ObjectId } from 'mongodb';
+import express from "express";
+import { getDB } from "../config/db.js";
+import { ObjectId } from "mongodb";
 
 const router = express.Router();
 
@@ -13,7 +13,12 @@ router.get("/", async (req, res) => {
     const skip = (page - 1) * limit;
 
     const db = await getDB();
-    const courts = await db.collection("courts").find().skip(skip).limit(limit).toArray();
+    const courts = await db
+      .collection("courts")
+      .find()
+      .skip(skip)
+      .limit(limit)
+      .toArray();
     const total = await db.collection("courts").countDocuments();
 
     res.json({ courts, total });
@@ -39,7 +44,9 @@ router.get("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const court = await db.collection("courts").findOne({ _id: new ObjectId(id) });
+    const court = await db
+      .collection("courts")
+      .findOne({ _id: new ObjectId(id) });
 
     if (!court) {
       return res.status(404).json({ error: "Court not found" });
@@ -50,7 +57,6 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch court by ID" });
   }
 });
-
 
 // ✅ Add court
 router.post("/", async (req, res) => {
@@ -66,17 +72,18 @@ router.post("/", async (req, res) => {
 // ✅ Delete court
 router.delete("/:id", async (req, res) => {
   const db = await getDB();
-  const result = await db.collection("courts").deleteOne({ _id: new ObjectId(req.params.id) });
+  const result = await db
+    .collection("courts")
+    .deleteOne({ _id: new ObjectId(req.params.id) });
   res.json(result);
 });
 
 // ✅ Update court
 router.patch("/:id", async (req, res) => {
   const db = await getDB();
-  const result = await db.collection("courts").updateOne(
-    { _id: new ObjectId(req.params.id) },
-    { $set: req.body }
-  );
+  const result = await db
+    .collection("courts")
+    .updateOne({ _id: new ObjectId(req.params.id) }, { $set: req.body });
   res.json(result);
 });
 
@@ -84,10 +91,9 @@ router.patch("/:id", async (req, res) => {
 router.patch("/:id/status", async (req, res) => {
   const db = await getDB();
   const { status } = req.body;
-  const result = await db.collection("courts").updateOne(
-    { _id: new ObjectId(req.params.id) },
-    { $set: { status } }
-  );
+  const result = await db
+    .collection("courts")
+    .updateOne({ _id: new ObjectId(req.params.id) }, { $set: { status } });
   res.json(result);
 });
 
