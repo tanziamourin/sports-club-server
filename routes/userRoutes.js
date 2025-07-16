@@ -4,22 +4,28 @@ import { getDB } from "../config/db.js";
 
 const router = express.Router();
 
-// POST /users - Create new user
-
+// ✅ POST /users - Create new user
 router.post("/", async (req, res) => {
   try {
     const { name, email, image } = req.body;
     const db = getDB();
 
-    const existing = await db.collection("users").findOne({ email: req.params.email.toLowerCase() });
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+
+    // ✅ Lowercase email for consistency
+    const normalizedEmail = email.toLowerCase();
+
+    const existing = await db.collection("users").findOne({ email: normalizedEmail });
     if (existing) {
       return res.status(409).json({ error: "User already exists" });
     }
 
     const newUser = {
-      name,
-      email,
-      image,
+      name: name || "Unnamed",
+      email: normalizedEmail,
+      image: image || "",
       role: "user",
       createdAt: new Date(),
     };
@@ -27,11 +33,12 @@ router.post("/", async (req, res) => {
     const result = await db.collection("users").insertOne(newUser);
     res.status(201).json(result);
   } catch (err) {
+    console.error("❌ Error creating user:", err);
     res.status(500).json({ error: "Failed to create user" });
   }
 });
 
-// GET /users - All users
+// ✅ GET /users - All users
 router.get("/", async (req, res) => {
   try {
     const db = getDB();
@@ -42,7 +49,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// PATCH /users/:id/role - Update user role
+// ✅ PATCH /users/:id/role - Update user role
 router.patch("/:id/role", async (req, res) => {
   try {
     const db = getDB();
@@ -57,7 +64,7 @@ router.patch("/:id/role", async (req, res) => {
   }
 });
 
-// DELETE /users/:id - Delete user
+// ✅ DELETE /users/:id - Delete user
 router.delete("/:id", async (req, res) => {
   try {
     const db = getDB();
@@ -71,30 +78,28 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// GET /users/role/:email - Get role by email
-// GET /users/role/:email - Get role by email
+// ✅ GET /users/role/:email - Get role by email
 router.get("/role/:email", async (req, res) => {
   try {
-    const db = await getDB(); // ✅ await যোগ করো
-    const user = await db
-      .collection("users")
-      .findOne({ email: req.params.email });
+    const db = getDB();
+    const email = decodeURIComponent(req.params.email).toLowerCase(); // lowercase and decode
+    const user = await db.collection("users").findOne({ email });
 
     if (!user) return res.status(404).json({ error: "User not found" });
 
     res.json({ role: user.role });
   } catch (err) {
+    console.error("❌ Error getting user role:", err);
     res.status(500).json({ error: "Failed to get user role" });
   }
 });
 
-// GET /users/admin/:email - Check admin
+// ✅ GET /users/admin/:email - Check admin
 router.get("/admin/:email", async (req, res) => {
   try {
     const db = getDB();
-    const user = await db
-      .collection("users")
-      .findOne({ email: req.params.email });
+    const email = decodeURIComponent(req.params.email).toLowerCase();
+    const user = await db.collection("users").findOne({ email });
 
     res.json({ admin: user?.role === "admin" });
   } catch (err) {
