@@ -72,9 +72,10 @@ router.delete("/:id", async (req, res) => {
 });
 
 // GET /users/role/:email - Get role by email
+// GET /users/role/:email - Get role by email
 router.get("/role/:email", async (req, res) => {
   try {
-    const db = getDB();
+    const db = await getDB(); // ✅ await যোগ করো
     const user = await db
       .collection("users")
       .findOne({ email: req.params.email });
