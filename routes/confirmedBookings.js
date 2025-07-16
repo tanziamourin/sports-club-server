@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
     const confirmed = await db
       .collection("payments")
       .find({})
-      .sort({ date: -1 }) // newest first
+      .sort({ date: -1 })
       .toArray();
 
     res.json(confirmed);

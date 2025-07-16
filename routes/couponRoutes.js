@@ -19,7 +19,9 @@ router.get("/", async (req, res) => {
 router.get("/apply/:code", async (req, res) => {
   try {
     const db = await getDB();
-    const coupon = await db.collection("coupons").findOne({ code: req.params.code });
+    const coupon = await db
+      .collection("coupons")
+      .findOne({ code: req.params.code });
 
     if (!coupon) {
       return res.status(404).json({ error: "Coupon not found" });
@@ -46,10 +48,9 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   try {
     const db = await getDB();
-    const result = await db.collection("coupons").updateOne(
-      { _id: new ObjectId(req.params.id) },
-      { $set: req.body }
-    );
+    const result = await db
+      .collection("coupons")
+      .updateOne({ _id: new ObjectId(req.params.id) }, { $set: req.body });
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: "Failed to update coupon" });
@@ -60,7 +61,9 @@ router.patch("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const db = await getDB();
-    const result = await db.collection("coupons").deleteOne({ _id: new ObjectId(req.params.id) });
+    const result = await db
+      .collection("coupons")
+      .deleteOne({ _id: new ObjectId(req.params.id) });
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: "Failed to delete coupon" });
