@@ -8,7 +8,7 @@ const router = express.Router();
 // ✅ Create Payment Intent
 router.post("/create-payment-intent", async (req, res) => {
   const { price } = req.body;
-  const amount = Math.round(price * 100); // in cents
+  const amount = Math.round(price * 100); 
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -24,7 +24,7 @@ router.post("/create-payment-intent", async (req, res) => {
   }
 });
 
-// ✅ Save Payment Info & Update Booking
+
 // ✅ Save Payment Info & Update Booking
 router.post("/", async (req, res) => {
   const payment = req.body;
@@ -32,14 +32,8 @@ router.post("/", async (req, res) => {
   try {
     const db = await getDB();
 
-    // // 1. Add userEmail if needed
-    // const updatedPayment = {
-    //   ...payment,
-    //   userEmail: payment.userEmail,  // ✅ For consistency
-    // };
-
-    // // 2. Save payment info to 'payments'
-    // await db.collection("payments").insertOne(updatedPayment);
+    
+   
 await db.collection("payments").insertOne(payment);
     // 3. Update booking status → confirmed
     await db.collection("bookings").updateOne(
@@ -60,7 +54,7 @@ router.get("/confirmed/:email", async (req, res) => {
   try {
     const db = await getDB();
     const confirmed = await db.collection("bookings").find({
-      userEmail: email, // changed to userEmail
+      userEmail: email, 
       status: "confirmed"
     }).toArray();
     res.json(confirmed);
@@ -75,7 +69,7 @@ router.get("/history/:email", async (req, res) => {
   try {
     const db = await getDB();
     const payments = await db.collection("payments")
-      .find({ userEmail: email }) // changed to userEmail
+      .find({ userEmail: email }) 
       .sort({ date: -1 })
       .toArray();
     res.json(payments);
