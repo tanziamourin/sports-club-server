@@ -1,4 +1,4 @@
-client side url : 
+client side url : https://sports-club-c4431.web.app/
 
 
 Features
