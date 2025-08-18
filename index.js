@@ -21,6 +21,7 @@ const app = express();
 app.use(
   cors({
     origin: "https://sports-club-c4431.web.app",
+    // "https://sports-club-c4431.web.app"
     credentials: true,
   })
 );
@@ -44,8 +45,11 @@ connectDB()
 
     app.use("/coupons", couponRoutes);
 
+
+    
+
     app.get("/", (req, res) => {
-      res.send("SCMS Server is running...");
+      res.send(" Server is running...");
     });
 
     app.listen(port, () => {

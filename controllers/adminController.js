@@ -106,3 +106,76 @@ export const rejectBooking = async (req, res) => {
 };
 
 
+// 8. Create Membership Plan
+export const createMembershipPlan = async (req, res) => {
+  try {
+    const db = getDB();
+    const plan = req.body;
+    const result = await db.collection("membershipPlans").insertOne(plan);
+    res.status(201).json({ message: "Plan created", plan: { ...plan, _id: result.insertedId } });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create plan" });
+  }
+};
+
+// 9. Get All Membership Plans
+export const getAllMembershipPlans = async (req, res) => {
+  try {
+    const db = getDB();
+    const plans = await db.collection("membershipPlans").find().toArray();
+    res.json(plans);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch plans" });
+  }
+};
+
+// 10. Update Membership Plan
+export const updateMembershipPlan = async (req, res) => {
+  try {
+    const db = getDB();
+    const { id } = req.params;
+    const plan = req.body;
+    const result = await db.collection("membershipPlans").updateOne(
+      { _id: new ObjectId(id) },
+      { $set: plan }
+    );
+    res.json({ message: "Plan updated", result });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update plan" });
+  }
+};
+
+// 11. Delete Membership Plan
+export const deleteMembershipPlan = async (req, res) => {
+  try {
+    const db = getDB();
+    const { id } = req.params;
+    const result = await db.collection("membershipPlans").deleteOne({ _id: new ObjectId(id) });
+    res.json({ message: "Plan deleted", result });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete plan" });
+  }
+};
+
+// 12. Toggle Membership Plan Status
+export const toggleMembershipPlanStatus = async (req, res) => {
+  try {
+    const db = getDB();
+    const { id } = req.params;
+    const { active } = req.body;
+
+    const result = await db.collection("membershipPlans").updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { active } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ error: "Plan not found or status unchanged" });
+    }
+
+    res.json({ message: `Plan ${active ? "activated" : "deactivated"}`, result });
+  } catch (err) {
+    console.error("❌ Toggle plan status failed:", err);
+    res.status(500).json({ error: "Failed to toggle plan status" });
+  }
+};
